@@ -1,0 +1,115 @@
+services:
+  client-db:
+    image: postgres:15
+    container_name: clients-db
+    environment:
+      POSTGRES_DB: clientsdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    networks:
+      - clients-network
+
+  professional-db:
+    image: postgres:15
+    container_name: professional-db
+    environment:
+      POSTGRES_DB: professionaldb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    networks:
+      - professional-network
+
+  consultation-db:
+    image: postgres:15
+    container_name: consultation-db
+    environment:
+      POSTGRES_DB: consultationdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    networks:
+      - consultation-network
+
+  client-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.APIs
+      args:
+        REPO_URL: https://github.com/VORP2830/Clients-API.git
+    ports:
+      - "3001:3000"
+    container_name: clients-api
+    environment:
+      DB_HOST: clients-db
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: clientsdb
+    depends_on:
+      - client-db
+    networks:
+      - clients-network
+      - shared-network
+
+  professional-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.APIs
+      args:
+        REPO_URL: https://github.com/VORP2830/Professional-API.git
+    ports:
+      - "3002:3000"
+    container_name: professional-api
+    environment:
+      DB_HOST: professional-db
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: professionaldb
+    depends_on:
+      - professional-db
+    networks:
+      - professional-network
+      - shared-network
+
+  consultation-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.APIs
+      args:
+        REPO_URL: https://github.com/VORP2830/Consultation-API.git
+    container_name: consultations-api
+    ports:
+      - "3003:3000"
+    environment:
+      DB_HOST: consultation-db
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: consultationdb
+      PROFESSIONAL_URL: http://professional-api:3000
+      CLIENT_URL: http://client-api:3000
+    depends_on:
+      - consultation-db
+      - client-api
+      - professional-api
+    networks:
+      - consultation-network
+      - shared-network
+  
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - consultation-api
+      - client-api
+      - professional-api
+    ports:
+      - "80:80"
+
+networks:
+  clients-network:
+  professional-network:
+  consultation-network:
+  shared-network:
