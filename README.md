@@ -1,5 +1,7 @@
 # Sistema de Agendamento de Consultas
 
+Este sistema tem como objetivo centralizar e facilitar o processo de agendamento de consultas, oferecendo funcionalidades completas para o **cadastro de clientes**, **cadastro de profissionais** e o **gerenciamento de consultas**. Através de uma interface web moderna, os usuários podem registrar novos clientes e profissionais da saúde, configurar especialidades, além de agendar, listar e gerenciar consultas de forma integrada. A estrutura do sistema é baseada em microserviços, promovendo uma separação clara entre as responsabilidades e garantindo escalabilidade e manutenibilidade.
+
 ## Sumário
 
 1. [Tecnologias Utilizadas](#tecnologias-utilizadas)  
